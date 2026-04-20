@@ -1,4 +1,5 @@
 import re
+import sys
 def make_a_dictionary():
     dic = {}
     check_prefix = 0
@@ -22,21 +23,45 @@ def make_a_dictionary():
     dic["prefix_v"] = [check_prefix]
     return dic
 def check_connection(connection, names):
+    dic = {}
+    n = 0
     try:
         for x in connection:
             x = x.strip().split("-")
-            if x[0] not in names :
-                raise ValueError("invalid name")
+            x[0] = x[0].strip()
+            if x[0] not in names:
+                raise ValueError("Invalid name")
             if x[1] not in names:
-                if "[" in x[1]:
-                    pairs = re.findall(r'(\w+)\s*=\s*(\w+)', x[1])
-
-                    print(pairs[0][0])
-
-                raise ValueError("invalid name")
+                if "[" not in x[1] and "]" not in x[1]:
+                    raise ValueError("Entre the [ ]")
+                c = x[1].count("]")
+                c1 = x[1].count("[")
+                if c1 != 1 or c != 1:
+                    raise ValueError("Please check the [ ] if it correct")
+                pairs = re.findall(r'(\w+)\s*=\s*(\w+)', x[1])
+                if len(pairs[0]) != 2:
+                    raise ValueError("enter like this the values max_link_capacity = value")
+                max_name = pairs[0][0].strip()
+                if max_name != "max_link_capacity":
+                    raise ValueError("Invalid name [max_link_capacity=....] like that")
+                value_max = pairs[0][1].strip()
+                v = int(value_max)
+                if v < 0:
+                    raise ValueError("the value must be up than 0 (max_link_capacity)")
+                second_name = x[1].split("[")
+                x[1] = second_name[0].strip()
+                if x[1] not in names:
+                    raise ValueError("invalid second name")
+                dic[n] = [x[0],x[1],v]
+            else:
+                if x[1] not in names:
+                    raise ValueError("Invalid second name")
+                dic[n] = [x[0],x[1]]
+            n+=1
     except ValueError as e:
-        print("Error",e)    
-
+        print("Error",e)
+        return False    
+    return dic
 
 
 
@@ -93,7 +118,8 @@ def check_start_end(start_hub):
         print('\033[91m',"Error", e)
 
 
-def check_hub(lines, dic):
+def check_hub(lines):
+    dic = make_a_dictionary()
     the_same_name = []
     dic_info = {}
     for line in lines:
@@ -247,14 +273,14 @@ def check_hub(lines, dic):
     the_same_name.extend(["hub","goal"])
     connection = check_connection(dic["connection"],the_same_name)
     if not connection:
+        sys.exit()
         return False
-    return dic_info
+    return dic_info,connection
     
 #zone=restricted color=red 
 def check_validation():
     dic = make_a_dictionary()
     if dic["prefix_v"][0] > 0:
-        # print(dic["prefix_v"][0])
         print("Error")
     nb_drones = dic["nb_drones"][0]
 
@@ -276,7 +302,7 @@ def check_validation():
     check_start_end(start_hub)
     end_hub = dic["end_hub"][0].strip()
     check_start_end(end_hub)
-    info = check_hub(dic["hub"],dic)
+    info = check_hub(dic["hub"])
     if not info:
         return
 

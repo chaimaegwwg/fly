@@ -76,13 +76,6 @@ def ft_info(info, start,end):
         grid[row][col].max_drones = max_drone
     
     return grid
-    # for x in range(start_row, end_row):
-    #     for y in range(start_col, end_col):
-    #         print(grid[x][y].name)
-    #         print(grid[x][y].zone)
-
-
-# info()
 def main():
     dic = make_a_dictionary()
     position = []
@@ -97,9 +90,9 @@ def main():
                 v = x.split()
                 end = (int(v[1]),int(v[2]))
     dic = make_a_dictionary()
-    info = check_hub(dic["hub"])
+    info,connection = check_hub(dic["hub"])
     grid = ft_info(info, start,end)
     display(grid,start, end)
+    print(connection)
 
 main()
-#ddd
