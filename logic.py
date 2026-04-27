@@ -7,7 +7,7 @@ import re
 # the finale parsing for the part of connection
 
 class Grid:
-    def __init__(self,name, row, col, zone=0, color =0, max_drones = 0):
+    def __init__(self,name, row, col, zone=0, color =0, max_drones = 0,visited=0,value=0):
         self.name = name 
         self.row = row
         self.col = col
@@ -15,7 +15,8 @@ class Grid:
         self.color = color
         self.max_drones = max_drones
         self.place = 0
-
+        self.value = 0
+        self.visited = False
 
 def display(grid, start , end):
     start_row, start_col = start
@@ -51,13 +52,20 @@ def ft_info(info, start,end):
     grid[end_row][end_col].name = "start_end"
     grid[end_row][end_col].place = 1
     for key , value in info.items():
-        
         row , col =value["position"]
         row = int(row)
         col = int(col)
         name = value["name"]
         try:
             zone = value["zone"]
+            if zone == "priority":
+                zone = 1
+            elif zone == "normal":
+                zone = 5
+            elif zone == "restricted":
+                zone = 20
+            else:
+                zone = None
         except:
             zone = 0
         try:
@@ -70,12 +78,63 @@ def ft_info(info, start,end):
         except:
             color = 0
         grid[row][col].zone = zone
+        grid[row][col].visited = False
         grid[row][col].place = 1
         grid[row][col].name = name
         grid[row][col].color = color
         grid[row][col].max_drones = max_drone
     
     return grid
+# def zone_cost(zone):
+#     if zone == "priority":
+#         zone = 1
+#     elif zone == "normal":
+#         zone = 5
+#     elif zone == "restricted":
+#         zone = 20
+#     else:
+#         zone = None
+
+def choice_the_path(places,info,grid):
+    zone = float('inf')
+    for i in places:
+        place,v = i
+        row ,col= info[place]["position"]
+        row = int(row)
+        col = int(col)
+        if grid[row][col].visited:
+            contunie
+        if zone > grid[row][col].zone:
+            zone = grid[row][col].zone
+            name = place
+    
+    return name,zone
+        
+
+
+def dijikstra(connection, info,grid):
+    place = next(iter(connection))
+    # print(info)
+    value = 0
+    while True:
+        row ,col= info[place]["position"]
+        row = int(row)
+        col = int(col)
+        if not grid[row][col].visited:
+            grid[row][col].value = value
+            grid[row][col].visited =True
+        
+        name ,v = choice_the_path(connection[place],info,grid)
+        value +=v
+        print(value)
+        print(name)
+        break
+
+
+
+
+
+
 def main():
     dic = make_a_dictionary()
     position = []
@@ -85,14 +144,19 @@ def main():
             for x in value:
                 v = x.split()
                 start = (int(v[1]),int(v[2]))
+                v = start
         if key.strip() == "end_hub":
             for x in value:
-                v = x.split()
-                end = (int(v[1]),int(v[2]))
+                d = x.split()
+                end = (int(d[1]),int(d[2]))
+                d = end 
     dic = make_a_dictionary()
+    # return end,start
     info,connection = check_hub(dic["hub"])
+    info["hub"] = {"name": "hub", "position": v, "zone": "priority", "max_drones": dic["nb_drones"]}
+    info["goal"] = {"name": "goal", "position": d, "zone": "priority", "max_drones": dic["nb_drones"]}
+    # print(info)
     grid = ft_info(info, start,end)
-    display(grid,start, end)
-    print(connection)
+    dijikstra(connection,info,grid)
 
 main()
