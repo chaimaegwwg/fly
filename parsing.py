@@ -24,7 +24,7 @@ def make_a_dictionary():
     return dic
 def check_connection(connection, names):
     dic = {}
-    n = 0
+    # n = 0
     try:
         for x in connection:
             x = x.strip().split("-")
@@ -52,12 +52,16 @@ def check_connection(connection, names):
                 x[1] = second_name[0].strip()
                 if x[1] not in names:
                     raise ValueError("invalid second name")
-                dic[n] = [x[0],x[1],v]
+                # dic[x[0]] = [x[1],v]
+                dic.setdefault(x[0],[]).append([x[1],v])
+                dic.setdefault(x[1],[]).append([x[0],v])
             else:
                 if x[1] not in names:
                     raise ValueError("Invalid second name")
-                dic[n] = [x[0],x[1]]
-            n+=1
+                # dic[x[0]] = [x[1]]
+                dic.setdefault(x[0],[]).append([x[1],1])
+                dic.setdefault(x[1],[]).append([x[0],1])
+            # n+=1
     except ValueError as e:
         print("Error",e)
         return False    
@@ -445,4 +449,3 @@ check_validation()
 #     # print(arg[0])
 
 # check_validation()
-
