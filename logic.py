@@ -67,11 +67,8 @@ def ft_info(info, start,end):
                 zone = 5
             elif zone == "restricted":
                 zone = 20
-<<<<<<< HEAD
-=======
             elif zone == "first":
                 zone = 0
->>>>>>> 94ebb9f (updat)
             else:
                 zone = None
         except:
@@ -105,39 +102,16 @@ def ft_info(info, start,end):
 #     else:
 #         zone = None
 
-<<<<<<< HEAD
-def choice_the_path(places,info,grid):
-    zone = float('inf')
-    for i in places:
-=======
 def choice_the_path(places,info,grid,visited):
     dic = {}
     zone = float('inf')
     for i in places:
         if i in visited:
             continue
->>>>>>> 94ebb9f (updat)
         place,v = i
         row ,col= info[place]["position"]
         row = int(row)
         col = int(col)
-<<<<<<< HEAD
-        if grid[row][col].visited:
-            contunie
-        if zone > grid[row][col].zone:
-            zone = grid[row][col].zone
-            name = place
-    
-    return name,zone
-        
-
-
-def dijikstra(connection, info,grid):
-    place = next(iter(connection))
-    # print(info)
-    value = 0
-    while True:
-=======
         dic[grid[row][col].name] = grid[row][col].zone
         if grid[row][col].visited:
             continue
@@ -173,21 +147,12 @@ def dijikstra(connection, info,grid):
     n = 0
     while True:
         dic = {}
->>>>>>> 94ebb9f (updat)
         row ,col= info[place]["position"]
         row = int(row)
         col = int(col)
         if not grid[row][col].visited:
             grid[row][col].value = value
             grid[row][col].visited =True
-<<<<<<< HEAD
-        
-        name ,v = choice_the_path(connection[place],info,grid)
-        value +=v
-        print(value)
-        print(name)
-        break
-=======
         name ,v,dic = choice_the_path(connection[place],info,grid,visited)
         place, v = chose_min(dic,visited,value)
         print("here value",v)
@@ -201,7 +166,6 @@ def dijikstra(connection, info,grid):
         n +=1
         if n == 3:
             break
->>>>>>> 94ebb9f (updat)
 
 
 
@@ -226,13 +190,8 @@ def main():
     dic = make_a_dictionary()
     # return end,start
     info,connection = check_hub(dic["hub"])
-<<<<<<< HEAD
-    info["hub"] = {"name": "hub", "position": v, "zone": "priority", "max_drones": dic["nb_drones"]}
-    info["goal"] = {"name": "goal", "position": d, "zone": "priority", "max_drones": dic["nb_drones"]}
-=======
     info["hub"] = {"name": "hub", "position": v, "zone": "first", "max_drones": dic["nb_drones"]}
     info["goal"] = {"name": "goal", "position": d, "zone": "normal", "max_drones": dic["nb_drones"]}
->>>>>>> 94ebb9f (updat)
     # print(info)
     grid = ft_info(info, start,end)
     dijikstra(connection,info,grid)

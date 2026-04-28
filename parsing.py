@@ -447,9 +447,3 @@ check_validation()
 #     check_start_end(end_hub)
 #     check_hub = check_hub()
 #     # print(arg[0])
-
-<<<<<<< HEAD
-# check_validation()
-=======
-# check_validation()
->>>>>>> 94ebb9f (updat)
